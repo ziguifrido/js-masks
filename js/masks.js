@@ -1,14 +1,11 @@
 const masks = {
     // CPF: 999.999.999-99
     cpf (value, $input) {
-
         var cpf = value.replace(/\D/g, '').trim()
-
         if (cpf.length >= 11){
             $input.className = $input.className
                 .replace("isok", "")
-                .replace("isnotok", "")
-                .trim()
+                .replace("isnotok", "").trim()
                 .concat(validateCpf(cpf) ? " isok" : " isnotok") 
         } else {
             $input.className = $input.className
@@ -26,16 +23,12 @@ const masks = {
 
     // CNPJ: 99.999.999/9999-99
     cnpj (value, $input) {
-
         var cnpj = value.replace(/\D/g, '').trim()
-
         if (cnpj.length >= 14){
             $input.className = $input.className
                 .replace("isok", "")
-                .replace("isnotok", "")
-                .trim()
-                .concat(
-                    validateCnpj(cnpj) ? " isok"  : " isnotok") 
+                .replace("isnotok", "").trim()
+                .concat(validateCnpj(cnpj) ? " isok"  : " isnotok") 
         } else {
             $input.className = $input.className
                 .replace("isok", "")
@@ -59,7 +52,6 @@ const masks = {
 
     // Telefone: (99)9 9999-9999 / (99)9999-9999
     phone (value, $input) {
-
         return value.replace(/\D/g, '').trim().length > 10
             ? value.replace(/\D/g, '')
                 .replace(/(\d{2})/, '($1')
@@ -97,31 +89,28 @@ const validateCpf = (value) => {
         value == "77777777777" || 
         value == "88888888888" || 
         value == "99999999999")
-        return false;
+        return false
 
-    var Soma = 0;
-    var Resto;
+    sum = 0
         
-    for (i=1; i<=9; i++) Soma = Soma + parseInt(value.substring(i-1, i)) * (11 - i);
-    Resto = (Soma * 10) % 11;
+    for (i = 1; i <= 9; i++) sum = sum + parseInt(value.substring(i - 1, i)) * (11 - i)
+    rest = (sum * 10) % 11
 
-    if ((Resto == 10) || (Resto == 11))  Resto = 0;
-    if (Resto != parseInt(value.substring(9, 10)) ) return false;
+    if ((rest == 10) || (rest == 11))  rest = 0
+    if (rest != parseInt(value.substring(9, 10)) ) return false
 
-    Soma = 0;
-    for (i = 1; i <= 10; i++) Soma = Soma + parseInt(value.substring(i-1, i)) * (12 - i);
-    Resto = (Soma * 10) % 11;
+    sum = 0
+    for (i = 1; i <= 10; i++) sum = sum + parseInt(value.substring(i - 1, i)) * (12 - i)
+    rest = (sum * 10) % 11
 
-    if ((Resto == 10) || (Resto == 11))  Resto = 0;
-    if (Resto != parseInt(value.substring(10, 11) ) ) return false;
-    return true;
+    if ((rest == 10) || (rest == 11))  rest = 0
+    return rest != parseInt(value.substring(10, 11)) ? false : true
 }
 
 const validateCnpj = (value) => {
  
     value = value.trim().substring(0, 14)
  
-    // Elimina CNPJs invalidos conhecidos
     if (value == "00000000000000" || 
         value == "11111111111111" || 
         value == "22222222222222" || 
@@ -132,36 +121,32 @@ const validateCnpj = (value) => {
         value == "77777777777777" || 
         value == "88888888888888" || 
         value == "99999999999999")
-        return false;
+        return false
          
-    // Valida DVs
-    tamanho = value.length - 2
-    numeros = value.substring(0,tamanho);
-    digitos = value.substring(tamanho);
-    soma = 0;
-    pos = tamanho - 7;
-    for (i = tamanho; i >= 1; i--) {
-      soma += numeros.charAt(tamanho - i) * pos--;
-      if (pos < 2)
-            pos = 9;
+    size = value.length - 2
+    numbers = value.substring(0, size)
+    digits = value.substring(size)
+    sum = 0
+    pos = size - 7
+
+    for (i = size; i >= 1; i--) {
+      sum += numbers.charAt(size - i) * pos--
+      if (pos < 2) pos = 9
     }
-    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-    if (resultado != digitos.charAt(0))
-        return false;
+
+    result = sum % 11 < 2 ? 0 : 11 - sum % 11
+    if (result != digits.charAt(0)) return false
          
-    tamanho = tamanho + 1;
-    numeros = value.substring(0,tamanho);
-    soma = 0;
-    pos = tamanho - 7;
-    for (i = tamanho; i >= 1; i--) {
-      soma += numeros.charAt(tamanho - i) * pos--;
-      if (pos < 2)
-            pos = 9;
+    size += 1
+    numbers = value.substring(0, size)
+    sum = 0
+    pos = size - 7
+
+    for (i = size; i >= 1; i--) {
+      sum += numbers.charAt(size - i) * pos--
+      if (pos < 2) pos = 9
     }
-    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-    if (resultado != digitos.charAt(1))
-          return false;
-           
-    return true;
-    
+
+    result = sum % 11 < 2 ? 0 : 11 - sum % 11
+    return result != digits.charAt(1) ? false : true
 }
